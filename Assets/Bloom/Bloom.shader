@@ -41,7 +41,8 @@
 			uniform half _BlurSize;
 			uniform half _Threshold; //泛光阈值
 			uniform sampler2D _BloomTex; //泛光图
-
+            uniform half _Intensity; //强度
+            
 			//泛光顶点着色器
 			v2f_normal vert_normal(appdata v)
 			{
@@ -54,8 +55,11 @@
 			float4 frag_threshold(v2f_normal i) : SV_Target
 			{
 				float4 col = tex2D(_MainTex, i.uv);
-
-				return float4(saturate(col.rgb - _Threshold), 1);
+                
+                half luminance = dot(half3(0.2125, 0.7154, 0.0721), col.rgb);
+                half factor = clamp(luminance - _Threshold, 0.0, 1.0);
+                
+				return col * factor * _Intensity;
 			}
 
 			//最终叠加
@@ -64,6 +68,7 @@
 				float4 col = tex2D(_MainTex, i.uv);
 				float4 bloomCol = tex2D(_BloomTex, i.uv);
 				
+                //return bloomCol;
 				return col + bloomCol;
 			}
 

@@ -12,6 +12,8 @@ public class PostProcessingBloom : MonoBehaviour {
 
     [SerializeField, Range(0,1)]
     float threshold = 0f;
+    [SerializeField, Range(0.5f, 3)]
+    float intensity = 1f;
 
     [SerializeField]
     int downSample = 1;         //降采样
@@ -51,33 +53,35 @@ public class PostProcessingBloom : MonoBehaviour {
         rt.filterMode = FilterMode.Bilinear;
         Graphics.Blit(source, rt);
 
+        // 提取高亮部分
         mat.SetFloat("_Threshold", threshold);
-        RenderTexture rt0 = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
-        rt0.filterMode = FilterMode.Bilinear;
-        Graphics.Blit(rt, rt0, mat, 0);
+        mat.SetFloat("_Intensity", intensity);
+        RenderTexture splitRT = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
+        splitRT.filterMode = FilterMode.Bilinear;
+        Graphics.Blit(rt, splitRT, mat, 0); 
         RenderTexture.ReleaseTemporary(rt);
 
-        //RenderTexture bloomRT = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
-        //bloomRT.filterMode = FilterMode.Bilinear;
-        mat.SetTexture("_BloomTex", rt0);
+        // 模糊
+        for (int i = 1; i <= iterations; i++)
+        {
+            mat.SetFloat("_BlurSize", i * blurSpread * (1 << downSample));
+            RenderTexture rt0 = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
+            rt0.filterMode = FilterMode.Bilinear;
+            Graphics.Blit(splitRT, rt0, GetMaterial(), 1);
+            RenderTexture.ReleaseTemporary(splitRT);
+
+            RenderTexture rt1 = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
+            rt1.filterMode = FilterMode.Bilinear;
+            Graphics.Blit(rt0, rt1, GetMaterial(), 2);
+            RenderTexture.ReleaseTemporary(rt0);
+            splitRT = rt1;
+        }
+
+        // 叠加
+        mat.SetTexture("_BloomTex", splitRT);
         Graphics.Blit(source, destination, mat, 3);
 
-        RenderTexture.ReleaseTemporary(rt0);
-
-        //for (int i = 1; i <= iterations; i++)
-        //{
-        //    mat.SetFloat("_BlurSize", i * blurSpread * (1<<downSample));
-        //    RenderTexture rt0 = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
-        //    rt0.filterMode = FilterMode.Bilinear;
-        //    Graphics.Blit(rt, rt0, GetMaterial(), 0);
-        //    RenderTexture.ReleaseTemporary(rt);
-
-        //    RenderTexture rt1 = RenderTexture.GetTemporary(rtWidth, rtHeigth, 0);
-        //    rt1.filterMode = FilterMode.Bilinear;
-        //    Graphics.Blit(rt0, rt1, GetMaterial(), 1);
-        //    RenderTexture.ReleaseTemporary(rt0);
-        //    rt = rt1;
-        //}
+        RenderTexture.ReleaseTemporary(splitRT);
 
     }
 
