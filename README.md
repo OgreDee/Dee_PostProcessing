@@ -13,7 +13,10 @@
 ## 调整亮度、对比度、饱和度
 
 > 亮度修改: color*亮度值
-> 对比度: 
+
+> 对比度: lerp(分割色，color)
+
+> 饱和度: 
 
 ![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostPressing_Color.png)
 
