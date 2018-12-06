@@ -14,9 +14,11 @@
 
 > 亮度修改: color*亮度值
 
-> 对比度: lerp(分割色，color)
+> 对比度: lerp(splitColor,color, 对比度)
 
-> 饱和度: 
+> 饱和度: 偏离灰度越大，饱和度约高，越靠近约低, lerap(grayCol, col, 饱和度值)
+
+> 下图是调高了亮度， 增加对比度、饱和度后的效果
 
 ![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostPressing_Color.png)
 
