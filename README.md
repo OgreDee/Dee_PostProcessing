@@ -28,3 +28,17 @@
 > 首先降采样，提取亮度高于阈值的部分，对过滤的图片进行模糊（实现衍射），最后把处理的图片和原图叠加
 
 ![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostPressing_Bloom.png)
+
+## 运动模糊
+### 累积缓存
+
+#### 实现思路
+> 存储前一帧的图像,渲染时，RenderTexture.MarkRestoreExpected()恢复, 与当前帧blend
+混合使用了两个PASS, 第一个blend, 第二个重置alpha
+
+> 效果图如下
+![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostProcessing_MotionBlur.png)
+
+### 速度缓存
+
+> (待加)
