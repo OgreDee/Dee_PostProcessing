@@ -49,5 +49,7 @@
 ### 自定义深度贴图
 
 > [Unity Shader - 深度图基础及应用](https://www.jianshu.com/p/80a932d1f11e)
+
 > [Unity Shader中的ComputeScreenPos函数](https://www.jianshu.com/p/df878a386bec)
 
+> [神奇的深度图：复杂的效果，不复杂的原理](https://zhuanlan.zhihu.com/p/27547127?refer=chenjiadong)
