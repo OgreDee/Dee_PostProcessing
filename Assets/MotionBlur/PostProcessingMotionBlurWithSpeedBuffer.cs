@@ -57,7 +57,9 @@ public class PostProcessingMotionBlurWithSpeedBuffer : MonoBehaviour {
 
         mat.SetMatrix("_PreviourMatrix_VP", previourMatrix_VP);
         //设置当前变换矩阵(Clip->View->World)
-        previourMatrix_VP = cam.projectionMatrix * cam.cameraToWorldMatrix;
+        //previourMatrix_VP = cam.projectionMatrix * cam.cameraToWorldMatrix;
+        previourMatrix_VP = cam.projectionMatrix * cam.worldToCameraMatrix;
+
         mat.SetMatrix("_CurMatrix_PV", previourMatrix_VP.inverse);
         //设置前帧变换矩阵
 

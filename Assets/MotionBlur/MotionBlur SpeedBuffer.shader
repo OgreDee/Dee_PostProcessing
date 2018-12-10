@@ -8,7 +8,11 @@
 	{
 		Tags { "RenderType"="Opaque" }
 		LOD 100
-        
+		
+		ZTest Always
+		Cull Off
+		ZWrite Off
+		   
         CGINCLUDE
 	        #include "UnityCG.cginc"
 	        struct a2v
@@ -56,7 +60,7 @@
             {
                 //采样深度
                 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.depthUV);
-				depth = Linear01Depth(depth);
+				//depth = Linear01Depth(depth);
 				//return float4(depth, depth, depth, 1);
                 //构建NDC坐标
                 float4 ndc = float4(i.uv.x * 2 - 1, i.uv.x * 2 - 1, depth * 2 - 1, 1);
@@ -69,14 +73,14 @@
                 //previours.xyzw = previours.xyzw / previours.w;
                 
                 //计算移动速度
-                float2 velocity = (ndc.xy - previours.xy / previours.w) / 2;
+                float2 velocity = (ndc.xy - previours.xy / previours.w) / 2.0f;
                 
                 float4 col = tex2D(_MainTex, i.uv);
                 
-                col += tex2D(_MainTex, i.uv + velocity * 0.5 * _BlurSize);
                 col += tex2D(_MainTex, i.uv + velocity * _BlurSize);
-                
-                return col / 3;
+                col += tex2D(_MainTex, i.uv + velocity * _BlurSize * 2);
+
+                return float4(col.rgb / 3, 1);
             }
         ENDCG
 
