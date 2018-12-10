@@ -32,7 +32,7 @@
             sampler2D _CameraDepthTexture;
             uniform float4x4 _PreviourMatrix_VP;
             uniform float4x4 _CurMatrix_PV;
-            
+            uniform float _BlurSize;
             
             v2f vert(a2v v)
             {
@@ -56,6 +56,8 @@
             {
                 //采样深度
                 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.depthUV);
+				depth = Linear01Depth(depth);
+				//return float4(depth, depth, depth, 1);
                 //构建NDC坐标
                 float4 ndc = float4(i.uv.x * 2 - 1, i.uv.x * 2 - 1, depth * 2 - 1, 1);
                 //倒推世界坐标
@@ -67,14 +69,14 @@
                 //previours.xyzw = previours.xyzw / previours.w;
                 
                 //计算移动速度
-                float2 velocity = (ndc.xy - previours.xy / previours.w);
+                float2 velocity = (ndc.xy - previours.xy / previours.w) / 2;
                 
                 float4 col = tex2D(_MainTex, i.uv);
                 
-                col += tex2D(_MainTex, i.uv + velocity);
-                //col += tex2D(_MainTex, i.uv + velocity);
+                col += tex2D(_MainTex, i.uv + velocity * 0.5 * _BlurSize);
+                col += tex2D(_MainTex, i.uv + velocity * _BlurSize);
                 
-                return col / 2;
+                return col / 3;
             }
         ENDCG
 

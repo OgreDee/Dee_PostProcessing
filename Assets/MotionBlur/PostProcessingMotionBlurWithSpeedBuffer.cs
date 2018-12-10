@@ -17,9 +17,7 @@ public class PostProcessingMotionBlurWithSpeedBuffer : MonoBehaviour {
 
 
     [SerializeField, Range(0f, 0.9f)]
-    float blurAmount;       //
-    [SerializeField]
-    int downSample;
+    float blurSize; 
 
     Material mat = null;
 
@@ -56,9 +54,6 @@ public class PostProcessingMotionBlurWithSpeedBuffer : MonoBehaviour {
             cam.depthTextureMode = DepthTextureMode.Depth;
         }
 
-        int rtWidth = source.width >> downSample;
-        int rtHeigth = source.height >> downSample;
-
 
         mat.SetMatrix("_PreviourMatrix_VP", previourMatrix_VP);
         //设置当前变换矩阵(Clip->View->World)
@@ -66,6 +61,7 @@ public class PostProcessingMotionBlurWithSpeedBuffer : MonoBehaviour {
         mat.SetMatrix("_CurMatrix_PV", previourMatrix_VP.inverse);
         //设置前帧变换矩阵
 
+        mat.SetFloat("_BlurSize", blurSize);
         Graphics.Blit(source, destination, mat);
     }
 
