@@ -69,3 +69,5 @@
 
 > 指数平方: e^(-(d-|z|)^2) d为浓度
 
+![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostPressing_Fog.png)
+
