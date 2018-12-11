@@ -42,11 +42,14 @@
 ![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostProcessing_MotionBlur.png)
 
 #### 速度缓存
+##### 实现思路
+> (1)保存上一帧的VP矩阵(世界坐标转视坐标转裁剪坐标)
+> (2)shader中获取深度depth,倒推NDC坐标(uv.x * 2 - 1, uv.y *2 - 1, depth*2 - 1, 1), 应用当前Matrix_PV倒推世界坐标,然后应用上一帧的VP矩阵得到上一帧这个世界坐标点的NDC坐标，用两次ndc坐标的距离计算速度。
 
-> (待加)
+> 这种实现只对相机运动，RenderObject没有运动的情况有效果。
 
 ## 基于深度和法线纹理的后期
-### 自定义深度贴图
+### 了解深度图
 
 > [Unity Shader - 深度图基础及应用](https://www.jianshu.com/p/80a932d1f11e)
 
@@ -55,3 +58,13 @@
 > [神奇的深度图：复杂的效果，不复杂的原理](https://zhuanlan.zhihu.com/p/27547127?refer=chenjiadong)
 
 > [全面认识Depth - 这里有关于Depth的一切](https://zhuanlan.zhihu.com/p/25095708)
+
+### 雾
+### 实现思路
+> 依然是根据深度获取世界坐标，雾计算方式：线性、指数、指数平方。
+
+> linear: (dmax - z) / (dmax - dmin)
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+> exponential: e^2
+
