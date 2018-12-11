@@ -63,8 +63,9 @@
 ### 实现思路
 > 依然是根据深度获取世界坐标，雾计算方式：线性、指数、指数平方。
 
-> linear: (dmax - z) / (dmax - dmin)
+> linear: (dmax - z) / (dmax - dmin)      dmax、dmin雾的最大、小距离
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-> exponential: e^2
+> exponential: e^(-d*|z|) d为浓度
+
+> 指数平方: e^(-(d-|z|)^2) d为浓度
 
