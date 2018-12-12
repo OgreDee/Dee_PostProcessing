@@ -27,7 +27,19 @@ public class PostProcessingFog : MonoBehaviour
     float fogEnd = 0f;
 
     Material mat;
-    
+
+    private void OnEnable()
+    {
+
+    }
+
+    private void OnDisable()
+    {
+        if(cam != null)
+        {
+            cam.depthTextureMode = DepthTextureMode.None;
+        }
+    }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
@@ -37,6 +49,10 @@ public class PostProcessingFog : MonoBehaviour
             return;
         }
 
+        if(cam == null)
+        {
+            cam = GetComponent<Camera>();
+        }
         if(cam.depthTextureMode != DepthTextureMode.Depth)
         {
             cam.depthTextureMode = DepthTextureMode.Depth;
