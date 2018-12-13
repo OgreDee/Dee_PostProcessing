@@ -60,7 +60,7 @@
 > [全面认识Depth - 这里有关于Depth的一切](https://zhuanlan.zhihu.com/p/25095708)
 
 ### 雾
-### 实现思路
+#### 实现思路
 > 依然是根据深度获取世界坐标，雾计算方式：线性、指数、指数平方。
 
 > linear: (dmax - z) / (dmax - dmin)      dmax、dmin雾的最大、小距离
@@ -71,3 +71,12 @@
 
 ![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostPressing_Fog.png)
 
+### 轮廓线
+#### 实现思路
+> 使用Roberts核，比较法线和深度差异
+
+> 下图未blur的效果图
+![image](https://github.com/OgreDee/Dee_PostProcessing/blob/master/pic/PostProcessing_SSEdge.png)
+
+### 屏幕空间边缘光
+![博客](https://www.jianshu.com/p/8ec0b3f80e64)
