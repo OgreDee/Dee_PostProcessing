@@ -6,9 +6,11 @@
         
         _EdgeOnly("EdgeOnly", Range(0,1)) = 0
         _EdgeColor("EdgeColor", Color) = (0,0,0,1)
-        _SampleDistance("SampleDistance", Range(0, 2)) = 1
-        _SensitivityDepth("SensitivityDepth", float) = 1
-        _SensitivityNormal("SensitivityNormal", float) = 1
+        _EdgeBGColor("EdgeBGColor", Color) = (0,0,0,1)
+        
+        _SampleDistance("SampleDistance", Range(0, 5)) = 1
+        _SensitivityDepth("SensitivityDepth", Range(0,5)) = 1
+        _SensitivityNormal("SensitivityNormal", Range(0,5)) = 1
 	}
     
 	SubShader
@@ -44,6 +46,8 @@
             
             float _EdgeOnly;
             float4 _EdgeColor;
+            float4 _EdgeBGColor;
+            
             float _SampleDistance;
 			float _SensitivityDepth;
             float _SensitivityNormal;
@@ -69,13 +73,34 @@
 				return o;
 			}
 			
+            half evaluateEdge(fixed4 l, fixed4 r)
+            {
+                //法线深度图(xy存法线, zw存深度)
+                float ld = DecodeFloatRG(l.zw);
+                float rd = DecodeFloatRG(r.zw);
+                
+                //比对法线、深度
+                half2 diffNormal = abs(l.xy - r.xy) * _SensitivityNormal;
+                int isSameNormal = (diffNormal.x + diffNormal.y) < 0.1;
+                int isSameDepth = abs(ld - rd) * _SensitivityDepth < 0.1 * ld;
+                //int isSameDepth = 1;
+                
+                return lerp(1, 0, isSameNormal * isSameDepth);
+            }
+            
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv[0]);
                 
+                fixed4 p1 = tex2D(_CameraDepthNormalsTexture, i.uv[1]);
+                fixed4 p2 = tex2D(_CameraDepthNormalsTexture, i.uv[2]);
+                fixed4 p3 = tex2D(_CameraDepthNormalsTexture, i.uv[3]);
+                fixed4 p4 = tex2D(_CameraDepthNormalsTexture, i.uv[4]);
                 
+                half edge = evaluateEdge(p1, p2) * evaluateEdge(p3, p4);
+                float4 c = lerp(col, _EdgeColor, edge);
                 
-				return col;
+                return c;
 			}
 			ENDCG
 		}

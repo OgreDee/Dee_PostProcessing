@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[ExecuteInEditMode]
 public class PostProcessingEdge : MonoBehaviour {
     [SerializeField]
     Material mat;
